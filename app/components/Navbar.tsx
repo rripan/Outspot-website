@@ -68,12 +68,6 @@ export default function Navbar() {
 
         {/* Right Side */}
         <div className="flex items-center gap-3">
-          <button className="hidden h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-sm text-gray-200 hover:bg-white/15 transition md:flex">
-            🔔
-          </button>
-          <button className="rounded-full border border-orange-400/80 px-4 py-1.5 text-xs font-semibold text-orange-200 hover:bg-orange-500/10 transition shadow-[0_0_0_1px_rgba(0,0,0,0.6)] md:px-5 md:text-sm">
-            Sign In
-          </button>
         </div>
       </div>
     </header>

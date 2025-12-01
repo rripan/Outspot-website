@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import Navbar from "./components/Navbar";
 import WaitlistForm from "./components/WaitlistForm";
+import FloatingDots from "./components/FloatingDots";
+
 
 type Feature = {
   title: string;
@@ -13,32 +15,32 @@ type Feature = {
 
 const FEATURES: Feature[] = [
   {
-    title: "Live City Map",
-    subtitle: "See where the energy is",
+    title: "Turn nights out into a game",
+    subtitle: "Challenges • Streaks • Drops",
     description:
-      "Watch your city light up with real-time activity from people going out — rooftops, bars, hidden cafés, and more.",
-    icon: "🗺️",
-  },
-  {
-    title: "Challenges & Drops",
-    subtitle: "Make going out a game",
-    description:
-      "Complete location-based challenges, unlock rewards, and level up your profile every time you step out.",
+      "OutSpot turns restaurants, bars, rooftops, and hidden cafés into playable spots. Complete challenges, keep streaks alive, and earn rewards for actually going out.",
     icon: "🎯",
   },
   {
-    title: "Spots, Streaks & Clout",
-    subtitle: "Be everywhere they aren’t",
+    title: "See where the energy is",
+    subtitle: "Live city layer",
     description:
-      "Get credit for being early, consistent, and active. Build streaks, collect spots, and climb leaderboards.",
+      "A live layer on top of your city shows where people are checking in, dropping moments, and getting spotted — right now, not last week.",
+    icon: "🗺️",
+  },
+  {
+    title: "Be early. Be seen.",
+    subtitle: "Spots • Clout • Progress",
+    description:
+      "Get credit for discovering places earlier than everyone else. Build a profile that shows where you’ve been, what you’ve unlocked, and how you move.",
     icon: "🔥",
   },
   {
-    title: "For the Real Ones",
-    subtitle: "No fake vibes",
+    title: "Real engagement for venues",
+    subtitle: "Beyond impressions",
     description:
-      "OutSpot is built for people who actually go out — not just scroll. Your nights out turn into stories that matter.",
-    icon: "💫",
+      "OutSpot is built to drive foot traffic, not just likes. Venues can plug into challenges and drops that bring people in, again and again.",
+    icon: "🏙️",
   },
 ];
 
@@ -67,47 +69,40 @@ function FeatureCard({ feature, index }: { feature: Feature; index: number }) {
   return (
     <div
       ref={ref}
-      className={`feature-card rounded-3xl border border-white/10 bg-black/60 p-5 md:p-6 
-                  shadow-[0_0_40px_rgba(0,0,0,0.6)] backdrop-blur-xl 
-                  ${visible ? "feature-visible" : "feature-hidden"}`}
+      className={`rounded-3xl border border-white/10 bg-black/70 p-5 md:p-6 shadow-[0_0_40px_rgba(0,0,0,0.7)] backdrop-blur-xl feature-hidden ${
+        visible ? "feature-visible" : ""
+      }`}
       style={{ transitionDelay: `${index * 120}ms` }}
     >
-      <div className="flex items-center gap-3">
-        <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-gradient-to-br from-pink-500 to-purple-500 text-lg shadow-md shadow-pink-500/40">
+      <div className="flex items-start gap-4">
+        <div className="mt-1 flex h-9 w-9 items-center justify-center rounded-2xl bg-gradient-to-br from-pink-500 to-purple-500 text-lg shadow-md shadow-pink-500/40">
           {feature.icon}
         </div>
-        <div className="text-left">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-gray-400">
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-400">
             {feature.subtitle}
           </p>
-          <h3 className="text-base md:text-lg font-semibold text-white">
+          <h3 className="mt-1 text-base md:text-lg font-semibold text-white">
             {feature.title}
           </h3>
+          <p className="mt-2 text-sm md:text-[15px] leading-relaxed text-gray-300">
+            {feature.description}
+          </p>
         </div>
       </div>
-      <p className="mt-3 text-sm md:text-[15px] leading-relaxed text-gray-300">
-        {feature.description}
-      </p>
     </div>
   );
 }
 
 export default function HomePage() {
-  const handleScrollToFeatures = () => {
-    const section = document.getElementById("features-section");
-    if (section) {
-      section.scrollIntoView({ behavior: "smooth" });
-    }
+  const scrollToSection = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-black text-white">
-      {/* Background image + gradient overlay */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="h-full w-full bg-[url('/outspot-bg.png')] bg-cover bg-center opacity-40" />
-        <div className="absolute inset-0 bg-gradient-to-tr from-black via-[#15001f]/85 to-[#ff6a3d]/45" />
-      </div>
-
+       <FloatingDots />
       {/* Floating dots */}
       <div className="pointer-events-none absolute inset-0">
         <span className="absolute left-10 top-40 h-4 w-4 rounded-full bg-gradient-to-br from-pink-500 to-purple-500 blur-[1px] animate-pulse" />
@@ -121,71 +116,134 @@ export default function HomePage() {
         <Navbar />
 
         <main className="flex-1">
-         {/* HERO */}
-<section className="flex min-h-screen w-full flex-col items-center justify-center text-center px-3">
-  {/* Title with glow + big animation */}
-  <div className="relative">
-  {/* Static glowing background */}
-  <div className="pointer-events-none absolute -inset-10 rounded-full bg-gradient-to-r from-pink-500/40 via-purple-500/30 to-orange-400/40 opacity-70 blur-3xl" />
+          {/* HERO – full screen */}
+          <section className="relative flex min-h-screen w-full flex-col items-center justify-center text-center px-3 overflow-hidden">
 
-  {/* OutSpot animated text */}
-  <h1 className="relative hero-title-animate bg-gradient-to-r from-pink-400 via-purple-400 to-orange-400 bg-clip-text text-6xl font-extrabold tracking-tight text-transparent sm:text-7xl md:text-8xl">
-    OutSpot
-  </h1>
-</div>
-
-
-  {/* Tagline */}
-  <p className="mt-5 text-xl font-medium text-gray-100 md:text-2xl hero-body-animate">
-    <span>Spot</span> <span className="text-gray-400">and</span>{" "}
-    <span className="text-emerald-300">be Spotted</span>
-  </p>
-
-  {/* Scroll hint */}
-  <button
-    onClick={handleScrollToFeatures}
-    className="mt-16 inline-flex flex-col items-center gap-1 text-xs font-medium text-gray-300 hover:text-white transition"
-  >
-    <span>Scroll to explore OutSpot</span>
-    <span className="animate-bounce text-lg">⌄</span>
-  </button>
-</section>
-
-
-          {/* FEATURES SECTION */}
-          <section
-            id="features-section"
-            className="relative z-10 mx-auto mt-4 w-full max-w-5xl px-2 pb-8 pt-10 md:px-4 md:pb-16 md:pt-16"
-          >
-            <div className="mx-auto max-w-2xl text-center mb-8 md:mb-10">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-gray-400">
-                How OutSpot works
-              </p>
-              <h2 className="mt-2 text-2xl md:text-3xl font-semibold text-white">
-                Turn your nights out into a game.
-              </h2>
-              <p className="mt-3 text-sm md:text-[15px] text-gray-300">
-                OutSpot is built around real movement, real places, and real
-                people. You explore, complete challenges, and get seen in the
-                spots that matter.
-              </p>
+  {/* Background image ONLY for hero */}
+  <div className="pointer-events-none absolute inset-0 -z-10">
+    <div className="h-full w-full bg-[url('/outspot-bg.png')] bg-cover bg-center opacity-40" />
+    <div className="absolute inset-0 bg-gradient-to-tr from-black via-[#15001f]/85 to-[#ff6a3d]/45" />
+  </div>
+            {/* Title with glow + animation */}
+            <div className="relative">
+              <div className="pointer-events-none absolute -inset-10 rounded-full bg-gradient-to-r from-pink-500/40 via-purple-500/30 to-orange-400/40 blur-3xl" />
+              <h1 className="relative hero-title-animate bg-gradient-to-r from-pink-400 via-purple-400 to-orange-400 bg-clip-text text-6xl font-extrabold tracking-tight text-transparent sm:text-7xl md:text-8xl">
+                OutSpot
+              </h1>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2 md:gap-6">
-              {FEATURES.map((feature, index) => (
-                <FeatureCard
-                  key={feature.title}
-                  feature={feature}
-                  index={index}
-                />
-              ))}
+            {/* Tagline */}
+            <p className="mt-5 text-xl font-medium text-gray-100 md:text-2xl hero-body-animate">
+              <span>Spot</span> <span className="text-gray-400">and</span>{" "}
+              <span className="text-emerald-300">be Spotted</span>
+            </p>
+
+            {/* Scroll hint */}
+            <button
+              onClick={() => scrollToSection("what-is-outspot")}
+              className="mt-16 inline-flex flex-col items-center gap-1 text-xs font-medium text-gray-300 hover:text-white transition"
+            >
+              <span>Scroll to learn what OutSpot is</span>
+              <span className="animate-bounce text-lg">⌄</span>
+            </button>
+          </section>
+
+          {/* SECTION 2 – What is OutSpot */}
+          <section
+            id="what-is-outspot"
+            className="w-full py-24 px-4 md:px-8 flex justify-center"
+          >
+            <div className="w-full max-w-3xl space-y-8">
+              <div className="inline-flex items-center gap-2 rounded-full bg-white/5 px-3 py-1">
+                <span className="h-2 w-2 rounded-full bg-emerald-400" />
+                <span className="text-[11px] font-semibold tracking-[0.22em] text-gray-300 uppercase">
+                  What is OutSpot?
+                </span>
+              </div>
+
+              <h2 className="bg-gradient-to-r from-pink-400 via-purple-400 to-orange-400 bg-clip-text text-3xl md:text-4xl font-bold text-transparent">
+                Your city, turned into a playable map.
+              </h2>
+
+              <div className="space-y-4 text-sm md:text-base leading-relaxed text-gray-200">
+                <p>
+                  OutSpot is a social discovery app for people who don&apos;t
+                  want to waste nights doom-scrolling through review apps. It
+                  turns the city into a playground of spots, streaks, and
+                  challenges that reward you for actually showing up.
+                </p>
+                <p>
+                  Instead of static lists and star ratings, OutSpot shows you
+                  where things are happening right now — the rooftops, bars,
+                  clubs, and hidden corners that are actually alive tonight.
+                </p>
+                <p>
+                  Every check-in, challenge, and moment you drop builds a story
+                  of where you&apos;ve been and how you move through your city.
+                </p>
+              </div>
+
+              {/* Second scroll hint */}
+              <button
+                onClick={() => scrollToSection("features-section")}
+                className="mt-6 inline-flex flex-col items-start gap-1 text-xs font-medium text-gray-300 hover:text-white transition"
+              >
+                <span>Scroll to see how it works</span>
+                <span className="animate-bounce text-lg">⌄</span>
+              </button>
             </div>
           </section>
 
-          {/* WAITLIST SECTION at bottom */}
+          {/* SECTION 3 – Features (stacked boxes) */}
+          <section
+            id="features-section"
+            className="w-full py-24 px-4 md:px-8 flex justify-center"
+          >
+            <div className="w-full max-w-3xl space-y-10">
+              <div className="space-y-3 text-left">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-gray-400">
+                  Features
+                </p>
+                <h2 className="text-2xl md:text-3xl font-semibold text-white">
+                  How OutSpot turns going out into an experience.
+                </h2>
+                <p className="text-sm md:text-[15px] text-gray-300 max-w-xl">
+                  Scroll through the pillars of the app — each one is designed
+                  to make your next night out feel less random and way more
+                  intentional.
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-8">
+                {FEATURES.map((feature, index) => (
+                  <FeatureCard
+                    key={feature.title}
+                    feature={feature}
+                    index={index}
+                  />
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* SECTION 3.5 – Full-width marquee */}
+          <section className="w-full">
+            <div className="w-screen relative left-1/2 right-1/2 -mx-[50vw] overflow-hidden border-t border-b border-white/10 bg-white/5 py-3">
+              <div className="marquee flex items-center gap-16 whitespace-nowrap text-[11px] md:text-sm font-semibold uppercase tracking-[0.35em] text-gray-200">
+                <span>Challenges • Streaks • Drops • Stories</span>
+                <span>Spot • Be Spotted • Level Up • Repeat</span>
+                <span>Real Places • Real People • Real Nights</span>
+                <span>Challenges • Streaks • Drops • Stories</span>
+                <span>Spot • Be Spotted • Level Up • Repeat</span>
+                <span>Real Places • Real People • Real Nights</span>
+              </div>
+            </div>
+          </section>
+
+          {/* SECTION 4 – Waitlist at the bottom */}
           <section
             id="waitlist-section"
-            className="relative z-10 w-full px-4 pb-16 pt-8 md:pb-24 md:pt-10 flex justify-center"
+            className="w-full pb-24 pt-12 px-4 md:px-8 flex justify-center"
           >
             <div className="w-full max-w-2xl">
               <WaitlistForm />

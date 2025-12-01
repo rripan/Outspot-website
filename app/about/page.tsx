@@ -1,173 +1,256 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Navbar from "../components/Navbar";
+import { useEffect, useRef, useState } from "react";
+import WaitlistForm from "../components/WaitlistForm";
+import FloatingDots from "../components/FloatingDots";
+import HomeButtonLogo from "../components/HomeButtonLogo";
 
-export default function AboutPage() {
-  const [parallaxOffset, setParallaxOffset] = useState(0);
+
+type Feature = {
+  title: string;
+  subtitle: string;
+  description: string;
+  icon: string;
+};
+
+const FEATURES: Feature[] = [
+  {
+    title: "Turn nights out into a game",
+    subtitle: "Challenges • Streaks • Drops",
+    description:
+      "OutSpot turns restaurants, bars, rooftops, and hidden cafés into playable spots. Complete challenges, keep streaks alive, and earn rewards for actually going out.",
+    icon: "🎯",
+  },
+  {
+    title: "See where the energy is",
+    subtitle: "Live city layer",
+    description:
+      "A live layer on top of your city shows where people are checking in, dropping moments, and getting spotted — right now, not last week.",
+    icon: "🗺️",
+  },
+  {
+    title: "Be early. Be seen.",
+    subtitle: "Spots • Clout • Progress",
+    description:
+      "Get credit for discovering places earlier than everyone else. Build a profile that shows where you’ve been, what you’ve unlocked, and how you move.",
+    icon: "🔥",
+  },
+  {
+    title: "Real engagement for venues",
+    subtitle: "Beyond impressions",
+    description:
+      "OutSpot is built to drive foot traffic, not just likes. Venues can plug into challenges and drops that bring people in, again and again.",
+    icon: "🏙️",
+  },
+];
+
+function FeatureCard({ feature, index }: { feature: Feature; index: number }) {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      // subtle parallax; adjust multiplier if you want it stronger/weaker
-      setParallaxOffset(window.scrollY * 0.15);
-    };
+    const el = ref.current;
+    if (!el) return;
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.unobserve(entry.target);
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
 
   return (
+    <div
+      ref={ref}
+      className={`rounded-3xl border border-white/10 bg-black/70 p-5 md:p-6 shadow-[0_0_40px_rgba(0,0,0,0.7)] backdrop-blur-xl feature-hidden ${
+        visible ? "feature-visible" : ""
+      }`}
+      style={{ transitionDelay: `${index * 120}ms` }}
+    >
+      <div className="flex items-start gap-4">
+        <div className="mt-1 flex h-9 w-9 items-center justify-center rounded-2xl bg-gradient-to-br from-pink-500 to-purple-500 text-lg shadow-md shadow-pink-500/40">
+          {feature.icon}
+        </div>
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-400">
+            {feature.subtitle}
+          </p>
+          <h3 className="mt-1 text-base md:text-lg font-semibold text-white">
+            {feature.title}
+          </h3>
+          <p className="mt-2 text-sm md:text-[15px] leading-relaxed text-gray-300">
+            {feature.description}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function HomePage() {
+  const scrollToSection = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+  };
+
+  return (
     <div className="relative min-h-screen overflow-hidden bg-black text-white">
-      {/* Background image + gradient overlay with parallax */}
-      <div
-        className="pointer-events-none absolute inset-0 will-change-transform"
-        style={{
-          transform: `translateY(${parallaxOffset * -1}px)`,
-        }}
-      >
-        <div className="h-full w-full bg-[url('/outspot-bg.png')] bg-cover bg-center opacity-30" />
-        <div className="absolute inset-0 bg-gradient-to-tr from-black via-[#15001f]/85 to-[#ff6a3d]/40" />
+      <HomeButtonLogo />
+       <FloatingDots />
+      {/* Floating dots */}
+      <div className="pointer-events-none absolute inset-0">
+        <span className="absolute left-10 top-40 h-4 w-4 rounded-full bg-gradient-to-br from-pink-500 to-purple-500 blur-[1px] animate-pulse" />
+        <span className="absolute right-24 top-32 h-5 w-5 rounded-full bg-gradient-to-br from-orange-500 to-pink-500 blur-[1px] animate-pulse" />
+        <span className="absolute left-20 bottom-36 h-3 w-3 rounded-full bg-gradient-to-br from-purple-400 to-blue-400 blur-[1px] animate-pulse" />
+        <span className="absolute right-16 bottom-20 h-4 w-4 rounded-full bg-gradient-to-br from-pink-400 to-orange-400 blur-[1px] animate-pulse" />
       </div>
 
-      {/* Page content */}
+      {/* Content */}
       <div className="relative z-10 flex min-h-screen flex-col px-3 pt-4 md:px-8 md:pt-6">
-        <Navbar />
+      
 
-        <main className="flex flex-1 items-center justify-center">
-          <section className="mt-10 w-full max-w-5xl rounded-3xl bg-black/70 p-6 text-left shadow-[0_0_60px_rgba(0,0,0,0.85)] backdrop-blur-2xl md:mt-16 md:p-10">
-            {/* Top pill */}
-            <div className="inline-flex items-center gap-2 rounded-full bg-white/5 px-3 py-1">
-              <span className="h-2 w-2 rounded-full bg-emerald-400" />
-              <span className="text-[11px] font-semibold tracking-[0.22em] text-gray-300 uppercase">
-                What is OutSpot?
-              </span>
+        <main className="flex-1">
+          {/* HERO – full screen */}
+          <section className="flex min-h-screen w-full flex-col items-center justify-center text-center px-3">
+            {/* Title with glow + animation */}
+            <div className="relative">
+              <div className="pointer-events-none absolute -inset-10 rounded-full bg-gradient-to-r from-pink-500/40 via-purple-500/30 to-orange-400/40 blur-3xl" />
+              <h1 className="relative hero-title-animate bg-gradient-to-r from-pink-400 via-purple-400 to-orange-400 bg-clip-text text-6xl font-extrabold tracking-tight text-transparent sm:text-7xl md:text-8xl">
+                OutSpot
+              </h1>
             </div>
+              {/* Floating dots (keep them) */}
+  <div className="pointer-events-none absolute inset-0">
+    <span className="absolute left-10 top-40 h-4 w-4 rounded-full bg-gradient-to-br from-pink-500 to-purple-500 blur-[1px] animate-pulse" />
+    <span className="absolute right-24 top-32 h-5 w-5 rounded-full bg-gradient-to-br from-orange-500 to-pink-500 blur-[1px] animate-pulse" />
+    <span className="absolute left-20 bottom-36 h-3 w-3 rounded-full bg-gradient-to-br from-purple-400 to-blue-400 blur-[1px] animate-pulse" />
+    <span className="absolute right-16 bottom-20 h-4 w-4 rounded-full bg-gradient-to-br from-pink-400 to-orange-400 blur-[1px] animate-pulse" />
+  </div>
 
-            {/* Title */}
-            <h1 className="mt-4 hero-title-animate bg-gradient-to-r from-pink-400 via-purple-400 to-orange-400 bg-clip-text text-3xl font-extrabold text-transparent md:text-4xl lg:text-5xl">
-              Turning nights out into something you can actually play.
-            </h1>
-
-            {/* Subtext */}
-            <p className="hero-body-animate mt-4 text-sm leading-relaxed text-gray-200 md:text-base">
-              OutSpot is a social discovery app built for people who actually go
-              out — not just scroll. Instead of swiping through endless reviews,
-              you explore your city through live activity, challenges, and
-              moments from real people at real spots.
+            {/* Tagline */}
+            <p className="mt-5 text-xl font-medium text-gray-100 md:text-2xl hero-body-animate">
+              <span>Spot</span> <span className="text-gray-400">and</span>{" "}
+              <span className="text-emerald-300">be Spotted</span>
             </p>
 
-            {/* Two-column story */}
-            <div className="mt-10 grid gap-8 md:grid-cols-[1.1fr,0.9fr]">
-              {/* Left: Story / vision */}
-              <div className="space-y-4">
-                <h2 className="text-sm font-semibold uppercase tracking-[0.16em] text-gray-400">
-                  The idea
-                </h2>
-                <p className="text-sm leading-relaxed text-gray-200 md:text-[15px]">
-                  We&apos;re building a layer on top of your city where every
-                  visit, challenge, and check-in feels like progress. You earn
-                  points, build streaks, and get credit for being early to the
-                  spots that later become impossible to get into.
+            {/* Scroll hint */}
+            <button
+              onClick={() => scrollToSection("what-is-outspot")}
+              className="mt-16 inline-flex flex-col items-center gap-1 text-xs font-medium text-gray-300 hover:text-white transition"
+            >
+              <span>Scroll to learn what OutSpot is</span>
+              <span className="animate-bounce text-lg">⌄</span>
+            </button>
+          </section>
+
+          {/* SECTION 2 – What is OutSpot */}
+           <FloatingDots />
+          <section
+            id="what-is-outspot"
+            className="w-full py-24 px-4 md:px-8 flex justify-center"
+          >
+            <div className="w-full max-w-3xl space-y-8">
+              <div className="inline-flex items-center gap-2 rounded-full bg-white/5 px-3 py-1">
+                <span className="h-2 w-2 rounded-full bg-emerald-400" />
+                <span className="text-[11px] font-semibold tracking-[0.22em] text-gray-300 uppercase">
+                  What is OutSpot?
+                </span>
+              </div>
+
+              <h2 className="bg-gradient-to-r from-pink-400 via-purple-400 to-orange-400 bg-clip-text text-3xl md:text-4xl font-bold text-transparent">
+                Your city, turned into a playable map.
+              </h2>
+
+              <div className="space-y-4 text-sm md:text-base leading-relaxed text-gray-200">
+                <p>
+                  OutSpot is a social discovery app for people who don&apos;t
+                  want to waste nights doom-scrolling through review apps. It
+                  turns the city into a playground of spots, streaks, and
+                  challenges that reward you for actually showing up.
                 </p>
-                <p className="text-sm leading-relaxed text-gray-300 md:text-[15px]">
-                  For venues, OutSpot is a way to drive{" "}
-                  <span className="font-semibold text-purple-200">
-                    real engagement
-                  </span>{" "}
-                  — people walking through the door, not just impressions on
-                  another feed. For people, it&apos;s a way to see where the
-                  energy is right now and make every night feel like a mission.
+                <p>
+                  Instead of static lists and star ratings, OutSpot shows you
+                  where things are happening right now — the rooftops, bars,
+                  clubs, and hidden corners that are actually alive tonight.
+                </p>
+                <p>
+                  Every check-in, challenge, and moment you drop builds a story
+                  of where you&apos;ve been and how you move through your city.
                 </p>
               </div>
 
-              {/* Right: Who it's for */}
-              <div className="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-[0_0_40px_rgba(0,0,0,0.8)]">
-                <h2 className="text-sm font-semibold uppercase tracking-[0.16em] text-gray-400">
-                  Built for
+              {/* Second scroll hint */}
+              <button
+                onClick={() => scrollToSection("features-section")}
+                className="mt-6 inline-flex flex-col items-start gap-1 text-xs font-medium text-gray-300 hover:text-white transition"
+              >
+                <span>Scroll to see how it works</span>
+                <span className="animate-bounce text-lg">⌄</span>
+              </button>
+            </div>
+          </section>
+
+          {/* SECTION 3 – Features (stacked boxes) */}
+          <section
+            id="features-section"
+            className="w-full py-24 px-4 md:px-8 flex justify-center"
+          >
+            <div className="w-full max-w-3xl space-y-10">
+              <div className="space-y-3 text-left">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-gray-400">
+                  Features
+                </p>
+                <h2 className="text-2xl md:text-3xl font-semibold text-white">
+                  How OutSpot turns going out into an experience.
                 </h2>
-                <ul className="mt-4 space-y-3 text-sm text-gray-100 md:text-[15px]">
-                  <li className="flex gap-3">
-                    <span className="mt-0.5 text-lg">🧭</span>
-                    <div>
-                      <p className="font-semibold">Explorers</p>
-                      <p className="text-gray-300">
-                        People who want to find rooftops, dives, and hidden
-                        gems before everyone else.
-                      </p>
-                    </div>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="mt-0.5 text-lg">🏙️</span>
-                    <div>
-                      <p className="font-semibold">Venues</p>
-                      <p className="text-gray-300">
-                        Restaurants, bars, and clubs who care about repeat
-                        guests and live buzz — not bots and fake reviews.
-                      </p>
-                    </div>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="mt-0.5 text-lg">🗺️</span>
-                    <div>
-                      <p className="font-semibold">Cities</p>
-                      <p className="text-gray-300">
-                        Neighborhoods that feel alive when people are out,
-                        moving, and discovering what&apos;s around the corner.
-                      </p>
-                    </div>
-                  </li>
-                </ul>
+                <p className="text-sm md:text-[15px] text-gray-300 max-w-xl">
+                  Scroll through the pillars of the app — each one is designed
+                  to make your next night out feel less random and way more
+                  intentional.
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-8">
+                {FEATURES.map((feature, index) => (
+                  <FeatureCard
+                    key={feature.title}
+                    feature={feature}
+                    index={index}
+                  />
+                ))}
               </div>
             </div>
+          </section>
 
-            {/* Bottom stats / cards */}
-            <div className="mt-10 grid gap-4 text-sm sm:grid-cols-3 md:gap-6">
-              <div className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-4 transition-transform duration-300 hover:-translate-y-1 hover:border-pink-400/60 hover:bg-white/10">
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-pink-500/10 via-purple-500/5 to-orange-400/10 opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-100" />
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-gray-400">
-                  The vibe
-                </p>
-                <p className="mt-2 text-[15px] font-semibold text-white">
-                  Less scrolling. More stories you were actually there for.
-                </p>
-              </div>
-
-              <div className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-4 transition-transform duration-300 hover:-translate-y-1 hover:border-purple-400/60 hover:bg-white/10">
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-purple-500/10 via-blue-500/5 to-emerald-400/10 opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-100" />
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-gray-400">
-                  What you do
-                </p>
-                <p className="mt-2 text-[15px] font-semibold text-white">
-                  Drop in, complete challenges, get spotted, and level up your
-                  nightlife.
-                </p>
-              </div>
-
-              <div className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-4 transition-transform duration-300 hover:-translate-y-1 hover:border-orange-400/60 hover:bg-white/10">
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-orange-400/10 via-pink-500/5 to-yellow-300/10 opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-100" />
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-gray-400">
-                  Where we&apos;re going
-                </p>
-                <p className="mt-2 text-[15px] font-semibold text-white">
-                  A map that feels alive — powered by the people actually out in
-                  the city tonight.
-                </p>
+          {/* SECTION 3.5 – Full-width marquee */}
+          <section className="w-full">
+            <div className="w-screen relative left-1/2 right-1/2 -mx-[50vw] overflow-hidden border-t border-b border-white/10 bg-white/5 py-3">
+              <div className="marquee flex items-center gap-16 whitespace-nowrap text-[11px] md:text-sm font-semibold uppercase tracking-[0.35em] text-gray-200">
+                <span>Challenges • Streaks • Drops • Stories</span>
+                <span>Spot • Be Spotted • Level Up • Repeat</span>
+                <span>Real Places • Real People • Real Nights</span>
+                <span>Challenges • Streaks • Drops • Stories</span>
+                <span>Spot • Be Spotted • Level Up • Repeat</span>
+                <span>Real Places • Real People • Real Nights</span>
               </div>
             </div>
+          </section>
 
-            {/* Marquee strip */}
-            {/* Full-width marquee */}
-<div className="mt-16 w-screen relative left-1/2 right-1/2 -mx-[50vw] overflow-hidden border-t border-b border-white/10 bg-white/5 py-3">
-  <div className="marquee flex items-center gap-16 whitespace-nowrap text-[11px] md:text-sm font-semibold uppercase tracking-[0.35em] text-gray-200">
-    <span>Challenges • Streaks • Drops • Stories</span>
-    <span>Spot • Be Spotted • Level Up • Repeat</span>
-    <span>Real Places • Real People • Real Nights</span>
-    <span>Challenges • Streaks • Drops • Stories</span>
-    <span>Spot • Be Spotted • Level Up • Repeat</span>
-    <span>Real Places • Real People • Real Nights</span>
-  </div>
-</div>
-
+          {/* SECTION 4 – Waitlist at the bottom */}
+          <section
+            id="waitlist-section"
+            className="w-full pb-24 pt-12 px-4 md:px-8 flex justify-center"
+          >
+            <div className="w-full max-w-2xl">
+              <WaitlistForm />
+            </div>
           </section>
         </main>
       </div>
