@@ -165,7 +165,3 @@ For questions, collaborations, or early access inquiries:
 [hello@outspot.app](mailto:hello@outspot.app)
 
 ```
-
-
-Just let me know.
-```
