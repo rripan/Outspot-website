@@ -1,5 +1,4 @@
 
-```md
 # OutSpot
 
 OutSpot is a modern social discovery platform that turns going out into an experience.  
